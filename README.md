@@ -6,10 +6,9 @@ The mess allocation website is an online platform designed to streamline the pro
 ## Features
 - Streamline the mess allocation, short rebate and long rebate process to save time for both members and administrators.
 - Provide a seamless and intuitive user experience for members browsing and selecting meal rebates.
-- Users can search for available rooms based on their check-in and check-out dates, capacity, and room type preferences.
-- Users can view their past reservations and booking details on the website. They can also manage their bookings or cancel existing reservations.
-- Administrators have access to a dashboard for managing room listings, bookings, and user accounts. They can add, edit, or delete room listings, view and manage bookings made through the website, and monitor user activity.
-- •	The website integrates with the PayU payment gateway for secure online transactions. Users can make payments for their bookings through the website, enhancing the convenience of the booking process.
+- Users can apply for short-rebates and long-rebates by filling forms which are quite intuitive.
+- Users can view their past rebate applications as well as their allocation information in their profile.
+- Administrators have access to a dashboard for managing allocations, short-rebate forms and long-rebate forms for individual users. They can add, edit, or delete these things through the website, and monitor user activity. 
 - Role-based access control to ensure data privacy and security.
 - User-friendly interface for easy navigation and data entry.
 
