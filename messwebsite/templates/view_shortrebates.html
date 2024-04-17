@@ -685,43 +685,67 @@
       width: 40%;
       line-height: 40px;
     }
-  </style>
-  <div class="bdy">
-    <div class="ttl">
-      <h2>Allocation form</h2>
-      <!-- <h4>We Are Open For Reservations!</h4> -->
-    </div>
+    
 
-    <div class="reservation-box">
-        <h2>Apply for Rebate</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <div>
-              <h3>Chocie 1</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice1" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <div>
-              <h3>Chocie 2</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice2" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <div>
-              <h3>Chocie 3</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice3" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <br>
-            <input type="submit" value="Submit" id="submit-btn">
+  </style>
+
+  {% comment %} {% endblock %} {% endcomment %}
+
+  {% comment %} {% block body %} {% endcomment %}
+<main>
+    <div class="container mt-4">
+        <h2 class="mb-4">All Short Rebates</h2>
+    
+        <!-- Filtering Form -->
+        <form method="get" class="mb-4">
+            <div class="input-container">
+                <label for="semester">Select Semester:</label>
+                <select name="semester" id="semester" required>
+                  <option value="" {% if not selected_semester %}selected{% endif %}>All Semesters</option>
+                  {% for sem in semesters %}
+                    <option value="{{ sem.id }}" {% if selected_semester == sem.id %}selected{% endif %}>{{ sem.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="input-container my-2">
+                <label for="mess_period">Select Mess Period:</label>
+                <select name="mess_period" id="mess_period" required>
+                  <option value="" {% if not selected_mess_period %}selected{% endif %}>All Mess Periods</option>
+                  {% for mp in mess_periods %}
+                    <option value="{{ mp.id }}" {% if selected_mess_period == mp.id %}selected{% endif %}}>{{ mp.start_date }} to {{ mp.end_date }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
         </form>
+    
+        <!-- Rebates Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Total Days</th>
+                    <th>Rebating Caterer</th>
+                    <th>Rebated Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rebate in aggregated_rebates %}
+                <tr>
+                    <td>{{ rebate.student_applied }}</td>
+                    <td>{{ rebate.days_applied }}</td>
+                    <td>{{ rebate.rebating_caterer }}</td>
+                    <td>{{ rebate.amount }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No rebates found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-  </div>
 </main>
+
 
 {% endblock %}

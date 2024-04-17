@@ -1,6 +1,7 @@
 from django.db import models
 from .caterer import Caterer
-
+from .semester import Semester
+from .messperiod import messPeriod
 
 class Student(models.Model):
     name = models.CharField(
@@ -9,14 +10,34 @@ class Student(models.Model):
         default="",
         blank=True,
     )
-    email = models.CharField(max_length=50, default="")
-    caterer_alloted = models.ForeignKey(Caterer, on_delete=models.SET_NULL, null=True, blank=True)
+    email = models.CharField(
+        max_length=50, 
+        default=""
+    )
+    caterer_alloted = models.ForeignKey(
+        Caterer, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
+    semester = models.ForeignKey(
+        Semester, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
+    mess_period = models.ForeignKey(
+        messPeriod, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True
+    )
     alloted_id = models.CharField(
         max_length=20,
         default="",
         blank=True,
     )
-    roll_no = models.CharField(
+    roll_no = models.CharField(     
         max_length=20,
         default="",
         blank=True,
@@ -30,6 +51,10 @@ class Student(models.Model):
         null=True
     )
     shortrebate_days = models.IntegerField(
+        default=0,
+        null=True
+    )
+    longrebate_days = models.IntegerField(
         default=0,
         null=True
     )

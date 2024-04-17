@@ -12,6 +12,7 @@ urlpatterns = [
     # path('accounts/google/login/', oauth2_login, name="google_login"),
     # path('accounts/google/login/callback/', oauth2_callback, name="google_callback"),
     path('account/', include('allauth.socialaccount.urls')),
+    path('ajax/', include('ajax.urls')),
 ]
 
 if settings.DEBUG:

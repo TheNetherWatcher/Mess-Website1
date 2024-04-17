@@ -1,12 +1,14 @@
-from django.shortcuts import render
-from .models import Allocation, Cafeteria, Caterer, Contact, longRebate, Period, Rule, shortRebate, Student, Forms
+from .models import Allocation, Cafeteria, Caterer, Contact, longRebate, Period, Rule, shortRebate, Student, Forms, Semester
 from .models.messperiod import messPeriod
 from django.shortcuts import render, redirect
 import datetime
+from datetime import timedelta
+from django.db.models import F, Sum
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from allauth.socialaccount.models import SocialAccount
-from django.contrib.auth import authenticate,login as auth_login,logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login,logout as auth_logout
+from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import logout
 # from django.contrib.admin import 
@@ -59,11 +61,11 @@ def login(request):
     return render(request, "login.html")
 
 def logout(request):
-    # if request.user.is_authenticated:
-    #     auth_logout(request)
-    logout(request)
+    if request.user.is_authenticated:
+        auth_logout(request)
+    # logout(request)
     messages.info(request, "Logged out successfully!")
-    return redirect('/home')
+    return redirect('/')
 
 def links(request):
     links = Forms.objects.all()
@@ -133,50 +135,20 @@ def allocationForm(request):
 
 @login_required(login_url='/login/')
 def shortRebateForm (request):
-    student_email = Student.objects.filter(email__iexact=str(request.user.email)).last()
-
-    if request.method == 'POST':
-        start_date = request.POST['start_date']
-        end_date = request.POST['end_date']
-
-        st = Student.objects.get(email=student_email)
-        cat = str(st.caterer_alloted)
-        print(cat)
-        caterer_alloted = Caterer.objects.get(name=cat)
-        rebate_rate = caterer_alloted.rebate_rate
-        start_date_obj = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-        end_date_obj = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-        days_diff = (end_date_obj - start_date_obj).days + 1
-        print(start_date_obj)
-        mess_period = messPeriod.objects.filter(month=start_date_obj.month).first()
-        print(mess_period)
-        amount = days_diff * rebate_rate
-
-        try:
-            rebate = shortRebate(
-                student_applied=st,
-                rebating_caterer=caterer_alloted,
-                start_date=start_date_obj,
-                end_date=end_date_obj,
-                amount=amount
-            )
-            rebate.save()
-            print("shortrebate submitted successfully")
-        except:
-            print("Some error occured")
-            return redirect('/')
-        
-    return render(request, 'shortrebate.html', {'student': Student.objects.get(student_email=student_email), 'rebate': shortRebate.objects.get(student_applied=student_email, )})
+    student = Student.objects.filter(email__iexact=str(request.user.email)).last()
+    semesters = Semester.objects.all() 
+    mess_periods = messPeriod.objects.all()  
+    return render(request, "shortrebate.html", {"semesters": semesters, "mess_periods": mess_periods})
 
 @login_required(login_url='/login/')
 def longRebateForm(request):
+    student_email = Student.objects.filter(email__iexact=str(request.user.email)).last()
     if request.method == 'POST':
-        student_email = request.POST['email']
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
         # reason = request.POST['reason']
         file = request.FILES.get('file', None)
-
+        
         st = Student.objects.get(email=student_email)
 
         # Convert start and end dates to datetime objects
@@ -186,36 +158,76 @@ def longRebateForm(request):
         # Calculate the number of days for the rebate
         days_diff = (end_date_obj - start_date_obj).days + 1
 
-        try:
-            rebate = longRebate(
-                email=st,
-                start_date=start_date_obj,
-                end_date=end_date_obj,
-                days=days_diff,
-                # reason=reason,
-                file=file
-            )
-            rebate.save()
-            
-            print("logrebate submitted successfully")
-        except:
-            print("Some error occured")
-            return redirect('failure', student_email=student_email)
+        if days_diff > 7:
+            try:
+                rebate = longRebate(
+                    student=st,
+                    start_date=start_date_obj,
+                    end_date=end_date_obj,
+                    days=days_diff,
+                    # reason=reason,
+                    file=file
+                )
+                rebate.save()
+                
+                print("longrebate submitted successfully")
+            except:
+                print("Some error occured")
+                return redirect('failure', student_email=student_email)
     # Render the form if GET request
-    return render(request, 'longrebate.html')
+    return render(request, 'longrebate.html', {'student': Student.objects.get(email=student_email)})
 
+@login_required(login_url='/login/')
 def adminJobs(request):
-    if request.method == 'POST':
-        start = request.POST.get('start_datetime')
-        end = request.POST.get('end_datetime')
+    return render(request, 'adminjobs.html')
 
-        if start is None and end is not None:
-            return redirect('/adminJobs')
-        if start is not None and end is None:
-            return redirect('/adminJobs')
-        
-        
+def accept_longrebate(request):
+    rebate = longRebate.objects.all()
+    return render(request, 'accept_longrebate.html', {'rebate': rebate})
 
-    return render(request, 'allocation_schedule.html')
+def edit_caterer(request):
+    caterer = Caterer.objects.all()
+    return render(request, 'edit_caterers.html', {'caterers': caterer})
 
+def edit_cafeteria(request):
+    cafeteria = Cafeteria.objects.all()
+    return render(request, 'edit_cafeteria.html', {'cafeterias': cafeteria})
 
+def add_semester(request):
+    return render(request, 'add_semester.html')
+
+def add_messperiod(request):
+    semesters = Semester.objects.all()
+    return render(request, 'add_messperiod.html', {'semesters': semesters})
+
+@login_required(login_url='/login/')
+def viewShortRebates(request):
+    selected_semester = request.GET.get('semester', None)
+    selected_mess_period = request.GET.get('mess_period', None)
+
+    # Fetch students with aggregated rebate information
+    aggregated_rebates = shortRebate.objects.all()
+    
+    if selected_semester:
+        aggregated_rebates = aggregated_rebates.filter(semester_id=selected_semester)
+    if selected_mess_period:
+        aggregated_rebates = aggregated_rebates.filter(mess_period_id=selected_mess_period)
+
+    # aggregated_rebates = aggregated_rebates.values('student_applied').annotate(
+    #     total_days=Sum('days_applied'),
+    #     total_amount=Sum('amount')  # Assuming there is an 'amount' field in shortRebate model
+    # ).order_by('student_applied')
+
+    # aggregated_rebates = shortRebate.objects.values('student_applied').order_by('student_applied')
+
+    # Fetch all semesters and mess periods for filters
+    semesters = Semester.objects.all()
+    mess_periods = messPeriod.objects.all()
+
+    return render(request, 'view_shortrebates.html', {
+        'semesters': semesters,
+        'mess_periods': mess_periods,
+        'selected_semester': int(selected_semester) if selected_semester else None,
+        'selected_mess_period': int(selected_mess_period) if selected_mess_period else None,
+        'aggregated_rebates': aggregated_rebates
+    })

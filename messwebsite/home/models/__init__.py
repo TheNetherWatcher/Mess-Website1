@@ -9,3 +9,4 @@ from .allocation import Allocation
 from .contact import Contact
 from .period import Period
 from .forms import Forms
+from .semester import Semester

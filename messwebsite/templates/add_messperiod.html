@@ -686,42 +686,66 @@
       line-height: 40px;
     }
   </style>
-  <div class="bdy">
-    <div class="ttl">
-      <h2>Allocation form</h2>
-      <!-- <h4>We Are Open For Reservations!</h4> -->
-    </div>
 
-    <div class="reservation-box">
-        <h2>Apply for Rebate</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <div>
-              <h3>Chocie 1</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice1" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <div>
-              <h3>Chocie 2</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice2" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <div>
-              <h3>Chocie 3</h3>
-              {% for caterer in caterers %}
-                  <input type="radio" name="choice3" value="{{ caterer.name }}" class="my-2">
-                  <label for="{{ caterer.name }}">{{ caterer.name }}</label><br>
-              {% endfor %}
-            </div>
-            <br>
-            <input type="submit" value="Submit" id="submit-btn">
+  {% comment %} {% endblock %} {% endcomment %}
+
+  {% comment %} {% block body %} {% endcomment %}
+  <main>
+    <div class="bdy">
+      <div class="ttl">
+        <h2>Add a new mess period</h2>
+      </div>
+  
+      <div class="reservation-box">
+        <form id="mess-period-form" method="POST">
+          {% csrf_token %}
+          
+          <label for="start_date">Start Date:</label>
+          <input type="date" name="start_date" id="start_date" required><br><br>
+  
+          <label for="end_date">End Date:</label>
+          <input type="date" name="end_date" id="end_date" required><br><br>
+  
+          <label for="semester">Select Semester:</label>
+          <select name="semester" id="semester">
+            <option value="" disabled selected>Select Semester</option>
+            {% for semester in semesters %}
+              <option value="{{ semester.id }}">{{ semester.name }}</option>
+            {% endfor %}
+          </select><br><br>
+  
+          <input type="button" class="btn btn-outline-primary" value="Add" id="submit-btn">
         </form>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
+<script>
+
+    document.getElementById("submit-btn").addEventListener("click", function() {
+        const form = document.getElementById("mess-period-form");
+        const formData = new FormData(form);
+      
+        fetch('/ajax/add_messperiod/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert("Mess period has been added");
+            form.reset();
+          } else {
+            alert("Failed to add mess period");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert("An error occurred while adding mess period");
+        });
+      });
+</script>
 {% endblock %}

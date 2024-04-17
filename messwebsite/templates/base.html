@@ -172,7 +172,7 @@
     </style>
 </head>
 <body>
-{% url 'home' as home_url %}
+{% url '' as home_url %}
 {% url 'rules' as rules_url %}
 {% url 'caterer' as caterer_url %}
 {% url 'links' as links_url %}
@@ -184,33 +184,33 @@
     </div>
 
     <div class="headings">
-      <a class="nav-link {% if request.path == home_url %} active {%endif%}" aria-current="page" href="/home">Home</a>
+      <a class="nav-link {% if request.path == home_url %} active {%endif%}" aria-current="page" href="/">Home</a>
       <a class="nav-link {% if request.path == rules_url %} active {%endif%}" href="/rules">Rules</a>
       <a class="nav-link {% if request.path == caterer_url %} active {%endif%}" href="/caterer">Caterer's-Information</a>
       <a class="nav-link {% if request.path == links_url %} active {%endif%}" href="/links">Forms</a>
       <a class="nav-link {% if request.path == cafe_url %} active {%endif%}" href="/cafeteria">Additional Services</a>
       <a class="nav-link {% if request.path == contact_url %} active {%endif%}" href="/contact">Contact</a>
-      {% if user.is_superuser %}
+      {% comment %} {% if user.is_superuser %}
         <a class="nav-link {% if request.path == contact_url %} active {%endif%}" href="/adminJobs">Admin Jobs</a>
-      {% endif %}
+      {% endif %} {% endcomment %}
     </div>
 
     <div class="nav1-login">
       {% if user.is_authenticated %}
       {% if user.is_staff%}
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-          aria-expanded="false">
-          Hello Admin
+            aria-expanded="false" > 
+          Admin
         </a>
         <ul class="dropdown-menu dropdown-menu-end me-5 " aria-labelledby="navbarDropdown">
-          <li class="my-4"><a href="/allocation/">Allocation</a></li>
           <li class="my-4"><a href="/admin/">Admin Page</a></li>
+          <li class="my-4"><a href="/adminJobs/" target="_blank">Admin Jobs</a></li>
           <li class="my-4"><a href="/accounts/logout/">Logout</a></li>
         </ul>
       {% else %}
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
           aria-expanded="false" style="border: none;">
-          hello, {{user.first_name}}
+          Hello, {{user.first_name}}
         </a>
         <ul class="dropdown-menu me-5" aria-labelledby="navbarDropdown">
           <li><a class="dropdown-item" href="/profile/" style="border:none;">Profile</a></li>

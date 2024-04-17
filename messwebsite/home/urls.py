@@ -20,7 +20,7 @@ from .import views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path("home/", views.home, name="home"),
+    # path("home/", views.home, name="home"),
     path("rules/", views.rules, name="rules"),
     path("caterer/", views.caterer, name="caterer"),
     path("login/", views.login, name="login"),
@@ -33,6 +33,12 @@ urlpatterns = [
     path('longRebate/', views.longRebateForm, name='addLongRebateBill'),
     path('profile/', views.profile, name='profile'),
     path('allocationForm/', views.allocationForm, name='allocationForm'),
+    path('accept_longrebate/', views.accept_longrebate, name='accept_longrebate'),
+    path('edit_caterer/', views.edit_caterer, name='edit_caterer'),
+    path('edit_cafeteria/', views.edit_cafeteria, name='edit_cafeteria'),
+    path('add_semester/', views.add_semester, name='add_semester'),
+    path('add_messperiod/', views.add_messperiod, name='add_messperiod'),
+    path('viewShortRebates/', views.viewShortRebates, name='viewRebate'),
     # path('rebate_data/', views.rebate_data, name='rebate_data'),
     # path('')
     # path('period_data/', views.period_data, name='period_data'),

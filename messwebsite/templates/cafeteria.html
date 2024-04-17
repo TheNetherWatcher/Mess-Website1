@@ -16,7 +16,7 @@
       {% for item in cafeteria_items %}
         <div class="col-md-4">
           <div class="card my-3">
-            <img src="{{ item.image.url }}" class="card-img-top mx-2 my-2" alt="{{ item.name }}" style="height: 200px; object-fit: cover;">
+            {% comment %} <img src="{{ item.image.url }}" class="card-img-top mx-2 my-2" alt="{{ item.name }}" style="height: 200px; object-fit: cover;"> {% endcomment %}
             <div class="card-body">
               <h5 class="card-title">{{ item.name }}</h5>
               <p class="card-text">Point of Contact: {{ item.phone_number }}</p>

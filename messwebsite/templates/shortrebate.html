@@ -1,8 +1,5 @@
 {% extends 'base.html' %} {% load static %} {%block externalCss%}
 
-
-{% comment %} {% endblock %} {% endcomment %}
-
 <style>
   /*body {
     display: flex;
@@ -688,20 +685,79 @@
       width: 40%;
       line-height: 40px;
     }
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+      position: relative;
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 70%;
+  }
+
+  /* The Close Button */
+  .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+  }
+
   </style>
+
+  {% comment %} {% endblock %} {% endcomment %}
+
+  {% comment %} {% block body %} {% endcomment %}
+<main>
   <div class="bdy">
     <div class="ttl">
-      <h2>Rules,Regulations And Policies</h2>
-      <!-- <h4>We Are Open For Reservations!</h4> -->
+      <h2>Apply for short rebate</h2>
     </div>
 
     <div class="reservation-box">
-        <h2>Apply for Rebate</h2>
+        {% comment %} <h2>Apply for Rebate</h2> {% endcomment %}
         <form method="POST">
             {% csrf_token %}
-            <label for="email">Student Email:</label>
-            <span name="email" id="email">{{ student.email }}</span><br><br>
             
+            <div class="input-container">
+                <label for="semester">Select Semester:</label>
+                <select name="semester" id="semester" required>
+                    <option value="" disabled selected>Select Semester</option>
+                    {% for sem in semesters %}
+                        <option value="{{ sem.id }}">{{ sem.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="input-container">
+                <label for="mess_period">Select Mess Period:</label>
+                <select name="mess_period" id="mess_period" required>
+                    <option value="" disabled selected>Select Mess Period</option>
+                    {% for mp in mess_periods %}
+                        <option value="{{ mp.id }}">{{ mp.start_date }} to {{ mp.end_date }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+      
             <label for="start_date">Start Date:</label>
             <input type="date" name="start_date" id="start_date" required><br><br>
     
@@ -710,30 +766,66 @@
             
             <input type="submit" class="btn btn-outline-primary" value="Apply" id="submit-btn">
         </form>
-        <h2>Short Rebate Applied this month</h2>
-        <div class="inside">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Date Applied</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for rebate in rebates %}
-              <tr>
-                <td>{{ rebate.start_date }}</td>
-                <td>{{ rebate.end_date }}</td>
-                <td>{{ rebate.date_applied }}</td>
-                <td>{{ rebate.status }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
     </div>
+  </div>
+    <!-- Modal -->
+  <div id="myModal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="modal-message"></p>
+      </div>
   </div>
 </main>
 
+<script>
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks on the button, open the modal
+  function openModal(message) {
+      document.getElementById("modal-message").innerText = message;
+      modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+      modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  }
+
+  document.getElementById("submit-btn").addEventListener("click", function(event) {
+    event.preventDefault();
+    
+    var formData = new FormData(document.querySelector('form'));
+    
+    fetch("/ajax/shortRebateForm/", {
+        method: "POST",
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            openModal(data.error);
+        } else if (data.success) {
+            openModal(data.success);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+}); 
+
+</script>
 {% endblock %}
