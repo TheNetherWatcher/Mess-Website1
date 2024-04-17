@@ -1,4 +1,4 @@
-# Guest House/Hostel Booking Software
+# Mess Allocation Website
 
 ## Overview
 The mess allocation website is an online platform designed to streamline the process of allocating meals in mess facilities for members. It aims to provide a user-friendly interface for both members and administrators to manage meal allocations efficiently
