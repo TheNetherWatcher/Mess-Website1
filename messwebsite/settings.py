@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    "allauth.account.middleware.AccountMiddleware", # remove this, which only used in v0.56+
 ]
 
 MIDDLEWARE = [
