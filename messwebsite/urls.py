@@ -9,8 +9,6 @@ urlpatterns = [
     path("", include('home.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    # path('accounts/google/login/', oauth2_login, name="google_login"),
-    # path('accounts/google/login/callback/', oauth2_callback, name="google_callback"),
     path('account/', include('allauth.socialaccount.urls')),
     path('ajax/', include('ajax.urls')),
 ]

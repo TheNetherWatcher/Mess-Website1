@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from .import views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    # path("home/", views.home, name="home"),
     path("rules/", views.rules, name="rules"),
     path("caterer/", views.caterer, name="caterer"),
     path("login/", views.login, name="login"),
@@ -39,7 +40,7 @@ urlpatterns = [
     path('add_semester/', views.add_semester, name='add_semester'),
     path('add_messperiod/', views.add_messperiod, name='add_messperiod'),
     path('viewShortRebates/', views.viewShortRebates, name='viewRebate'),
-    # path('rebate_data/', views.rebate_data, name='rebate_data'),
-    # path('')
-    # path('period_data/', views.period_data, name='period_data'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -35,8 +35,8 @@
           <div class="card my-3 caterer-card" id="card-{{ caterer.id }}" onclick="editCaterer({{ caterer.id }})">
             {% if caterer.image %}
             <img src="{{ caterer.image.url }}" class="card-img-top" alt="{{ caterer.name }}">
-            {% else %}
-            <img src="{% static 'path_to_default_image.jpg' %}" class="card-img-top" alt="{{ caterer.name }}">
+            {% comment %} {% else %}
+            <img src="{% static 'path_to_default_image.jpg' %}" class="card-img-top" alt="{{ caterer.name }}"> {% endcomment %}
             {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ caterer.name }}</h5>

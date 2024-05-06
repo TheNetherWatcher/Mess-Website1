@@ -62,7 +62,7 @@ def login(request):
 
 def logout(request):
     if request.user.is_authenticated:
-        auth_logout(request)
+        logout(request)
     # logout(request)
     messages.info(request, "Logged out successfully!")
     return redirect('/')
@@ -81,6 +81,7 @@ def profile(request):
     socialaccount_obj = SocialAccount.objects.filter(provider='google', user_id=request.user.id)
     picture = "not available"
     allocation = Allocation.objects.filter(email=student).last()
+    # short_rebate = shortRebate.objects.filter(student=student).all()
     allocation_info = {}
     #improve this alignment of text to be shown on the profile section
     if allocation:
@@ -96,7 +97,13 @@ def profile(request):
             picture = socialaccount_obj[0].extra_data['picture']
     except:
         picture = "not available"
-    context = {"text": text,"student":student, "picture":picture,"allocation_info":allocation_info}
+    context = {
+        "text": text,
+        "student":student, 
+        "picture":picture,
+        "allocation_info":allocation_info,
+        # "short_rebate":short_rebate
+    }
     return render(request, "profile.html", context)
 
 @login_required(login_url='/login/')
@@ -200,7 +207,7 @@ def add_messperiod(request):
     semesters = Semester.objects.all()
     return render(request, 'add_messperiod.html', {'semesters': semesters})
 
-@login_required(login_url='/login/')
+# @login_required(login_url='/login/')
 def viewShortRebates(request):
     selected_semester = request.GET.get('semester', None)
     selected_mess_period = request.GET.get('mess_period', None)
@@ -213,13 +220,6 @@ def viewShortRebates(request):
     if selected_mess_period:
         aggregated_rebates = aggregated_rebates.filter(mess_period_id=selected_mess_period)
 
-    # aggregated_rebates = aggregated_rebates.values('student_applied').annotate(
-    #     total_days=Sum('days_applied'),
-    #     total_amount=Sum('amount')  # Assuming there is an 'amount' field in shortRebate model
-    # ).order_by('student_applied')
-
-    # aggregated_rebates = shortRebate.objects.values('student_applied').order_by('student_applied')
-
     # Fetch all semesters and mess periods for filters
     semesters = Semester.objects.all()
     mess_periods = messPeriod.objects.all()
@@ -231,3 +231,4 @@ def viewShortRebates(request):
         'selected_mess_period': int(selected_mess_period) if selected_mess_period else None,
         'aggregated_rebates': aggregated_rebates
     })
+

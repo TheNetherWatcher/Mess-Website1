@@ -9,6 +9,9 @@ class messPeriod(models.Model):
         on_delete=models.SET_NULL, 
         null=True
     )
+    allotment = models.BooleanField(
+        default=False
+    )
 
     def __str__(self):
         return f"{self.start_date} to {self.end_date}"

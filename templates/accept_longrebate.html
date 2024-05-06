@@ -27,7 +27,7 @@
                 <h5 class="card-title">Name of the student: {{ item.student.name }}</h5>
                   <p class="card-text">Email of the student: {{ item.student.email }}</p>
                   <p class="card-text">Number of days rebate is applied: {{ item.days }}</p>
-                  <p class="card-text">Amount of rebate: {{ item.amount }}</p>
+                  {% comment %} <p class="card-text">Amount of rebate: {{ item.amount }}</p> {% endcomment %}
                   <p class="card-text">Date of application: {{ item.date_applied }}</p>
                   <p class="card-text">Status: {% if item.approved == True %} Approved {% else %} Not Approved {% endif %}</p>
                   <a class="btn btn-primary" onclick="acceptRebate({{ item.id }})">Accept</a>

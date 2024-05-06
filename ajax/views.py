@@ -70,9 +70,7 @@ def update_caterer_info(request):
         caterer.rebate_rate = rebate_rate
         caterer.id_tobe_alloted = id_tobe_alloted
         caterer.amount_tobe_paid = amount_tobe_paid
-
-        if image is not None:
-            caterer.image = image
+        caterer.image = image
 
         caterer.save()
 

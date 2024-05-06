@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'ajax'
 
@@ -16,3 +18,6 @@ urlpatterns = [
     path('get-dates/<int:semester_id>/<int:mess_period_id>/', views.get_dates, name='get_dates'),
     path('shortRebateForm/', views.shortRebateForm, name='shortRebateForm'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

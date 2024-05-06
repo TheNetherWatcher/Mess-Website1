@@ -1,6 +1,8 @@
 {% extends 'base.html' %} {% load static %} {%block externalCss%}
 
 <style>
+  
+
   /*body {
     display: flex;
     align-items: center;
@@ -420,6 +422,21 @@
 {%block body%}
 <main>
   <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh; /* Set minimum height to viewport height */
+  }
+  
+  .container {
+      flex-grow: 1; /* Allow container to grow to fill remaining space */
+      min-height: 80vh;
+  }
+  
+  footer {
+      margin-top: auto; /* Push footer to bottom */
+  }
+
     .bdy{
       min-height: 65vh;
       padding-bottom: 20px;
